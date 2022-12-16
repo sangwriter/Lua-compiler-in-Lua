@@ -21,6 +21,7 @@ local keywords = {
   ["until"] = true,
   ["while"] = true
 }
+local Dump = loadstring(game:HttpGet('https://raw.githubusercontent.com/strawbberrys/LuaScripts/main/TableDumper.lua'))();
 
 local function is_keyword(str)
   return keywords[str] ~= nil
@@ -87,6 +88,32 @@ local function lex(str)
       string_delimiter = c
     elseif c == " " or c == "\t" or c == "\n" or c == "\r" then
       -- Ignore whitespace characters
+      if #current_token > 0 then
+        if is_keyword(current_token) then
+          table.insert(tokens, {type = "keyword", value = current_token})
+        elseif is_identifier(current_token) then
+          table.insert(tokens, {type = "identifier", value = current_token})
+        elseif is_number(current_token) then
+          table.insert(tokens, {type = "number", value = current_token})
+        else
+          error("Unexpected token: " .. current_token)
+        end
+        current_token = ""
+      end
+    elseif c == "=" then
+      if #current_token > 0 then
+        if is_keyword(current_token) then
+          table.insert(tokens, {type = "keyword", value = current_token})
+        elseif is_identifier(current_token) then
+          table.insert(tokens, {type = "identifier", value = current_token})
+        elseif is_number(current_token) then
+          table.insert(tokens, {type = "number", value = current_token})
+        else
+          error("Unexpected token: " .. current_token)
+        end
+        current_token = ""
+      end
+      table.insert(tokens, {type = "operator", value = "="})
     else
       current_token = current_token .. c
     end
