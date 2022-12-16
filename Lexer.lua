@@ -131,3 +131,4 @@ local function lex(str)
   end
   return tokens
 end
+return lex
